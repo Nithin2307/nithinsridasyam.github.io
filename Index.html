@@ -1,0 +1,2737 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nithin Sridasyam | Cybersecurity Portfolio</title>
+    <meta name="description" content="Cybersecurity portfolio of Nithin Sridasyam: threat detection, penetration testing, digital forensics, AI-based IDS, and NIST/FIPS security research." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --bg: #000;
+        --bg2: #060606;
+        --bg3: #0a0a0a;
+        --surface: #0f0f0f;
+        --surface2: #141414;
+        --surface3: #1a1a1a;
+        --border: rgba(255, 0, 0, 0.08);
+        --border2: rgba(255, 0, 0, 0.15);
+        --border3: rgba(255, 0, 0, 0.25);
+        --red: #ff0033;
+        --red2: #cc0028;
+        --red-dim: rgba(255, 0, 51, 0.08);
+        --red-glow: rgba(255, 0, 51, 0.15);
+        --red-bright: #ff1a4a;
+        --text: #f0f0f0;
+        --text2: rgba(240, 240, 240, 0.6);
+        --text3: rgba(240, 240, 240, 0.3);
+        --text4: rgba(240, 240, 240, 0.12);
+        --sans: "Outfit", sans-serif;
+        --mono: "JetBrains Mono", monospace;
+        --display: "Playfair Display", serif;
+        --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        --ease2: cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      html {
+        scroll-behavior: smooth;
+        -webkit-font-smoothing: antialiased;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--sans);
+        overflow-x: hidden;
+      }
+      ::selection {
+        background: var(--red);
+        color: #fff;
+      }
+      ::-webkit-scrollbar {
+        width: 4px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--red);
+        border-radius: 2px;
+      }
+
+      /* ═══ BOOT ═══ */
+      #boot-screen {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        background: #000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition:
+          opacity 0.8s ease,
+          visibility 0.8s ease;
+      }
+      #boot-screen.hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      .boot-ascii {
+        font-family: var(--mono);
+        font-size: 9px;
+        line-height: 1.1;
+        color: var(--red);
+        white-space: pre;
+        margin-bottom: 32px;
+        opacity: 0;
+        animation: bf 0.5s 0.1s forwards;
+        text-shadow: 0 0 20px rgba(255, 0, 51, 0.5);
+      }
+      .boot-logo {
+        font-family: var(--mono);
+        font-size: 14px;
+        color: var(--red);
+        text-align: center;
+        opacity: 0;
+        animation: bf 0.5s 0.3s forwards;
+      }
+      .boot-lines {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--text3);
+        text-align: left;
+        width: 400px;
+        max-width: 90vw;
+      }
+      .boot-line {
+        opacity: 0;
+        transform: translateY(5px);
+        margin-bottom: 4px;
+      }
+      .boot-line .ok {
+        color: var(--red);
+      }
+      .boot-progress {
+        width: 400px;
+        max-width: 90vw;
+        height: 2px;
+        background: var(--surface2);
+        margin-top: 24px;
+        border-radius: 1px;
+        overflow: hidden;
+        opacity: 0;
+        animation: bf 0.5s 0.5s forwards;
+      }
+      .boot-progress-bar {
+        width: 0%;
+        height: 100%;
+        background: linear-gradient(90deg, var(--red2), var(--red-bright));
+        box-shadow: 0 0 10px var(--red);
+        transition: width 0.1s linear;
+      }
+      @keyframes bf {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ═══ CURSOR ═══ */
+      .custom-cursor {
+        width: 16px;
+        height: 16px;
+        border: 1.5px solid var(--red);
+        border-radius: 50%;
+        position: fixed;
+        pointer-events: none;
+        z-index: 99998;
+        transition:
+          transform 0.15s var(--ease),
+          opacity 0.3s,
+          background 0.3s;
+        mix-blend-mode: difference;
+      }
+      .custom-cursor.hover {
+        transform: scale(2.5);
+        background: rgba(255, 0, 51, 0.15);
+        border-color: rgba(255, 0, 51, 0.5);
+      }
+      .cursor-dot {
+        width: 4px;
+        height: 4px;
+        background: var(--red);
+        border-radius: 50%;
+        position: fixed;
+        pointer-events: none;
+        z-index: 99998;
+        transition: transform 0.05s;
+      }
+
+      /* ═══ CANVAS & OVERLAYS ═══ */
+      #particles {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .scanlines {
+        position: fixed;
+        inset: 0;
+        z-index: 9998;
+        pointer-events: none;
+        background: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0, 0, 0, 0.03) 2px,
+          rgba(0, 0, 0, 0.03) 4px
+        );
+      }
+      .noise-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 9997;
+        pointer-events: none;
+        opacity: 0.03;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      }
+
+      /* ═══ NAV ═══ */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 9000;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 48px;
+        backdrop-filter: saturate(180%) blur(20px);
+        -webkit-backdrop-filter: saturate(180%) blur(20px);
+        background: rgba(0, 0, 0, 0.7);
+        border-bottom: 1px solid var(--border);
+        transform: translateY(-100%);
+        animation: slideD 0.6s var(--ease) 0.2s forwards;
+      }
+      @keyframes slideD {
+        to {
+          transform: translateY(0);
+        }
+      }
+      .nav-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: var(--mono);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        color: var(--red);
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+      .nav-brand .bracket {
+        color: var(--text3);
+        font-weight: 300;
+      }
+      .nav-brand .pulse {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--red);
+        box-shadow:
+          0 0 12px var(--red),
+          0 0 24px rgba(255, 0, 51, 0.3);
+        animation: pulse 2s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          box-shadow:
+            0 0 12px var(--red),
+            0 0 24px rgba(255, 0, 51, 0.3);
+        }
+        50% {
+          box-shadow:
+            0 0 20px var(--red),
+            0 0 40px rgba(255, 0, 51, 0.5);
+        }
+      }
+      .nav-menu {
+        display: flex;
+        gap: 8px;
+        list-style: none;
+      }
+      .nav-menu a {
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text3);
+        text-decoration: none;
+        padding: 8px 16px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        transition: all 0.3s var(--ease);
+      }
+      .nav-menu a:hover,
+      .nav-menu a.active {
+        color: var(--red);
+        border-color: var(--border2);
+        background: var(--red-dim);
+      }
+
+      /* ═══ GLITCH ═══ */
+      .glitch {
+        position: relative;
+        display: inline-block;
+      }
+      .glitch::before,
+      .glitch::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      .glitch::before {
+        color: var(--red);
+        animation: g1 3s infinite linear alternate-reverse;
+        clip-path: inset(0 0 80% 0);
+      }
+      .glitch::after {
+        color: #00f0ff;
+        animation: g2 2s infinite linear alternate-reverse;
+        clip-path: inset(80% 0 0 0);
+      }
+      @keyframes g1 {
+        0%,
+        90%,
+        100% {
+          transform: translate(0);
+        }
+        92% {
+          transform: translate(-3px, 1px);
+        }
+        94% {
+          transform: translate(3px, -1px);
+        }
+        96% {
+          transform: translate(-2px, 2px);
+        }
+        98% {
+          transform: translate(2px, -2px);
+        }
+      }
+      @keyframes g2 {
+        0%,
+        90%,
+        100% {
+          transform: translate(0);
+        }
+        91% {
+          transform: translate(3px, 1px);
+        }
+        93% {
+          transform: translate(-3px, -1px);
+        }
+        95% {
+          transform: translate(2px, 2px);
+        }
+        97% {
+          transform: translate(-2px, -1px);
+        }
+      }
+
+      /* ═══ SECTIONS ═══ */
+      section {
+        position: relative;
+        z-index: 1;
+        padding: 0 48px;
+        max-width: 1300px;
+        margin: 0 auto;
+      }
+      .section-tag {
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        color: var(--red);
+        margin-bottom: 20px;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 16px;
+        background: var(--red-dim);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+      }
+      .section-tag::before {
+        content: "//";
+        color: var(--text3);
+      }
+      .sh {
+        font-family: var(--display);
+        font-size: clamp(40px, 6vw, 72px);
+        font-weight: 400;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+        margin-bottom: 20px;
+      }
+      .sh .red {
+        color: var(--red);
+      }
+      .ss {
+        font-size: 16px;
+        font-weight: 300;
+        line-height: 1.7;
+        color: var(--text2);
+        max-width: 550px;
+      }
+      .sd {
+        max-width: 1300px;
+        margin: 0 auto;
+        padding: 0 48px;
+      }
+      .sdi {
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent 0%,
+          var(--red) 20%,
+          var(--red) 80%,
+          transparent 100%
+        );
+        opacity: 0.15;
+      }
+
+      /* ═══ HERO ═══ */
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding-top: 60px;
+        position: relative;
+        overflow: hidden;
+      }
+      .hero-bg-text {
+        position: absolute;
+        font-family: var(--sans);
+        font-size: clamp(150px, 20vw, 280px);
+        font-weight: 800;
+        color: var(--text4);
+        opacity: 0.3;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        white-space: nowrap;
+        pointer-events: none;
+        user-select: none;
+        letter-spacing: -0.05em;
+      }
+      .hero-grid-bg {
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(255, 0, 51, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 0, 51, 0.03) 1px, transparent 1px);
+        background-size: 80px 80px;
+        mask-image: radial-gradient(
+          ellipse at 60% 50%,
+          black 30%,
+          transparent 70%
+        );
+        -webkit-mask-image: radial-gradient(
+          ellipse at 60% 50%,
+          black 30%,
+          transparent 70%
+        );
+      }
+      .hero-glow-1 {
+        position: absolute;
+        top: 10%;
+        right: 5%;
+        width: 500px;
+        height: 500px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 0, 51, 0.08),
+          transparent 70%
+        );
+        filter: blur(60px);
+        animation: f1 10s ease-in-out infinite;
+      }
+      .hero-glow-2 {
+        position: absolute;
+        bottom: 20%;
+        left: -5%;
+        width: 400px;
+        height: 400px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 0, 51, 0.04),
+          transparent 70%
+        );
+        filter: blur(80px);
+        animation: f2 12s ease-in-out infinite;
+      }
+      @keyframes f1 {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        50% {
+          transform: translate(-30px, -40px) scale(1.1);
+        }
+      }
+      @keyframes f2 {
+        0%,
+        100% {
+          transform: translate(0, 0);
+        }
+        50% {
+          transform: translate(20px, 30px);
+        }
+      }
+      .hero-content {
+        position: relative;
+        z-index: 2;
+      }
+      .hero-top-line {
+        font-family: var(--mono);
+        font-size: 13px;
+        font-weight: 400;
+        color: var(--red);
+        letter-spacing: 0.1em;
+        margin-bottom: 28px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        opacity: 0;
+        animation: hr 1s var(--ease) 0.25s forwards;
+      }
+      .hero-top-line .line {
+        width: 40px;
+        height: 1px;
+        background: var(--red);
+      }
+      .hero-name {
+        font-family: var(--sans);
+        font-size: clamp(56px, 9vw, 120px);
+        font-weight: 800;
+        line-height: 0.95;
+        letter-spacing: -0.04em;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+        opacity: 0;
+        animation: hr 1s var(--ease) 0.4s forwards;
+      }
+      .hero-name .outline {
+        -webkit-text-stroke: 1.5px var(--text);
+        color: transparent;
+      }
+      .hero-name .red {
+        color: var(--red);
+        text-shadow: 0 0 40px rgba(255, 0, 51, 0.4);
+      }
+      .hero-title-row {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        margin-bottom: 32px;
+        opacity: 0;
+        animation: hr 1s var(--ease) 0.55s forwards;
+      }
+      .hero-title-badge {
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 10px 20px;
+        border: 1px solid var(--border2);
+        border-radius: 4px;
+        color: var(--text2);
+        background: var(--red-dim);
+      }
+      .hero-sep {
+        width: 1px;
+        height: 24px;
+        background: var(--text3);
+      }
+      .hero-location {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--text3);
+        letter-spacing: 0.08em;
+      }
+      .hero-desc {
+        font-size: 18px;
+        font-weight: 300;
+        line-height: 1.75;
+        color: var(--text2);
+        max-width: 560px;
+        margin-bottom: 48px;
+        opacity: 0;
+        animation: hr 1s var(--ease) 0.7s forwards;
+      }
+      .hero-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        opacity: 0;
+        animation: hr 1s var(--ease) 0.85s forwards;
+      }
+      @keyframes hr {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .btn-red {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 16px 32px;
+        background: var(--red);
+        color: #fff;
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        text-decoration: none;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.4s var(--ease);
+        box-shadow: 0 0 30px rgba(255, 0, 51, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+      .btn-red::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        transform: translateX(-100%);
+        transition: transform 0.6s;
+      }
+      .btn-red:hover::before {
+        transform: translateX(100%);
+      }
+      .btn-red:hover {
+        transform: translateY(-2px);
+        box-shadow:
+          0 0 50px rgba(255, 0, 51, 0.4),
+          0 10px 40px rgba(0, 0, 0, 0.5);
+      }
+      .btn-outline {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 16px 32px;
+        background: transparent;
+        color: var(--text2);
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        text-decoration: none;
+        border: 1px solid var(--border2);
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.4s var(--ease);
+      }
+      .btn-outline:hover {
+        color: var(--red);
+        border-color: var(--red);
+        background: var(--red-dim);
+        transform: translateY(-2px);
+      }
+
+      /* ═══ METRICS ═══ */
+      .metrics {
+        padding: 100px 48px;
+        max-width: 1300px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+      .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 2px;
+        background: var(--border);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .metric {
+        background: var(--bg2);
+        padding: 36px 24px;
+        text-align: center;
+        transition: all 0.4s var(--ease);
+        position: relative;
+      }
+      .metric::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 2px;
+        background: var(--red);
+        transition: width 0.4s var(--ease);
+      }
+      .metric:hover {
+        background: var(--surface);
+      }
+      .metric:hover::after {
+        width: 60%;
+      }
+      .metric-num {
+        font-family: var(--sans);
+        font-size: 36px;
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1;
+        margin-bottom: 6px;
+      }
+      .metric-num .r {
+        color: var(--red);
+      }
+      .metric-label {
+        font-family: var(--mono);
+        font-size: 9px;
+        font-weight: 500;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--text3);
+      }
+
+      /* ═══ ABOUT ═══ */
+      .about {
+        padding-top: 140px;
+        padding-bottom: 140px;
+      }
+      .about-layout {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 80px;
+        align-items: start;
+      }
+      .about-text h2 {
+        font-family: var(--display);
+        font-size: clamp(36px, 4.5vw, 56px);
+        font-weight: 400;
+        line-height: 1.15;
+        margin-bottom: 32px;
+      }
+      .about-text p {
+        font-size: 15px;
+        font-weight: 300;
+        line-height: 1.85;
+        color: var(--text2);
+        margin-bottom: 20px;
+      }
+      .about-text .hl {
+        color: var(--red);
+        font-weight: 400;
+      }
+      .about-card {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        overflow: hidden;
+        background: var(--bg2);
+      }
+      .about-card-header {
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface);
+      }
+      .acd {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+      }
+      .acd.r {
+        background: var(--red);
+      }
+      .acd.y {
+        background: #ff6600;
+        opacity: 0.5;
+      }
+      .acd.g {
+        background: #00cc66;
+        opacity: 0.5;
+      }
+      .about-card-title {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--text3);
+        margin-left: 8px;
+      }
+      .about-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+        transition: background 0.3s;
+      }
+      .about-row:last-child {
+        border-bottom: none;
+      }
+      .about-row:hover {
+        background: var(--surface);
+      }
+      .about-key {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--red);
+        opacity: 0.7;
+      }
+      .about-val {
+        font-size: 13px;
+        font-weight: 400;
+        color: var(--text);
+        text-align: right;
+      }
+
+      /* ═══ EXPERIENCE ═══ */
+      .experience {
+        padding-bottom: 140px;
+      }
+      .exp-timeline {
+        position: relative;
+        padding-left: 40px;
+      }
+      .exp-timeline::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 11px;
+        width: 1px;
+        background: linear-gradient(
+          180deg,
+          var(--red),
+          var(--red) 50%,
+          var(--text4)
+        );
+      }
+      .exp-item {
+        position: relative;
+        margin-bottom: 48px;
+        padding: 32px;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        transition: all 0.4s var(--ease);
+      }
+      .exp-item:hover {
+        border-color: var(--border2);
+        transform: translateX(6px);
+        box-shadow:
+          -4px 0 0 var(--red),
+          0 8px 40px rgba(0, 0, 0, 0.3);
+      }
+      .exp-item::before {
+        content: "";
+        position: absolute;
+        left: -35px;
+        top: 36px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--red);
+        border: 2px solid var(--bg);
+        box-shadow: 0 0 12px var(--red);
+        z-index: 2;
+      }
+      .exp-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .exp-role {
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+      .exp-org {
+        font-size: 14px;
+        font-weight: 300;
+        color: var(--text2);
+        margin-top: 4px;
+      }
+      .exp-date {
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 6px 14px;
+        border: 1px solid var(--border2);
+        border-radius: 4px;
+        color: var(--red);
+        background: var(--red-dim);
+        white-space: nowrap;
+      }
+      .exp-points {
+        list-style: none;
+      }
+      .exp-points li {
+        font-size: 13px;
+        font-weight: 300;
+        line-height: 1.75;
+        color: var(--text2);
+        padding: 6px 0 6px 20px;
+        position: relative;
+        border-left: 1px solid var(--border);
+        margin-left: 4px;
+        transition: all 0.3s;
+      }
+      .exp-points li:hover {
+        color: var(--text);
+        border-left-color: var(--red);
+        padding-left: 24px;
+      }
+      .exp-points li::before {
+        content: "›";
+        position: absolute;
+        left: 6px;
+        top: 6px;
+        color: var(--red);
+        font-weight: 600;
+      }
+
+      /* ═══ DASHBOARD ═══ */
+      .dashboard {
+        padding-bottom: 140px;
+      }
+      .dash-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 24px;
+      }
+      .dash-panel {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .dash-panel-header {
+        padding: 14px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface);
+      }
+      .dpt {
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--text3);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .dpt .dot-live {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--red);
+        animation: pulse 2s infinite;
+      }
+      .dps {
+        font-family: var(--mono);
+        font-size: 9px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--red);
+        opacity: 0.6;
+      }
+      .skill-bars {
+        padding: 24px;
+      }
+      .skill-bar-item {
+        margin-bottom: 20px;
+      }
+      .skill-bar-item:last-child {
+        margin-bottom: 0;
+      }
+      .skill-bar-top {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+      .sbn {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text2);
+      }
+      .sbp {
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--red);
+      }
+      .sbt {
+        height: 3px;
+        background: var(--surface2);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .sbf {
+        height: 100%;
+        background: linear-gradient(90deg, var(--red2), var(--red));
+        border-radius: 2px;
+        width: 0%;
+        transition: width 1.5s var(--ease);
+        box-shadow: 0 0 8px rgba(255, 0, 51, 0.3);
+      }
+      .tool-grid {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .tool-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+        border-radius: 4px;
+        transition: all 0.3s;
+        cursor: default;
+      }
+      .tool-item:hover {
+        background: var(--red-dim);
+      }
+      .tool-name {
+        font-family: var(--mono);
+        font-size: 12px;
+        font-weight: 400;
+        color: var(--text2);
+      }
+      .tool-status {
+        font-family: var(--mono);
+        font-size: 9px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 3px 10px;
+        border-radius: 3px;
+        background: rgba(0, 204, 102, 0.08);
+        color: rgba(0, 204, 102, 0.8);
+        border: 1px solid rgba(0, 204, 102, 0.15);
+      }
+
+      /* ═══ PROJECTS ═══ */
+      .projects {
+        padding-bottom: 140px;
+      }
+      .proj-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+      }
+      .proj-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 36px;
+        transition: all 0.5s var(--ease);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .proj-card::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle at center,
+          var(--red-glow),
+          transparent 50%
+        );
+        opacity: 0;
+        transition: opacity 0.5s;
+        pointer-events: none;
+      }
+      .proj-card:hover::before {
+        opacity: 1;
+      }
+      .proj-card:hover {
+        border-color: var(--border3);
+        transform: translateY(-6px);
+        box-shadow:
+          0 20px 60px rgba(0, 0, 0, 0.5),
+          0 0 40px rgba(255, 0, 51, 0.05);
+      }
+      .proj-card.featured {
+        grid-column: 1/-1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        padding: 44px;
+      }
+      .proj-num {
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.15em;
+        color: var(--red);
+        opacity: 0.5;
+        margin-bottom: 16px;
+      }
+      .proj-card h3 {
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        margin-bottom: 12px;
+      }
+      .proj-card p {
+        font-size: 14px;
+        font-weight: 300;
+        line-height: 1.75;
+        color: var(--text2);
+        margin-bottom: 24px;
+        flex: 1;
+      }
+      .proj-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .proj-tag {
+        font-family: var(--mono);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        padding: 5px 12px;
+        border: 1px solid var(--border);
+        border-radius: 3px;
+        color: var(--text3);
+        transition: all 0.3s;
+      }
+      .proj-card:hover .proj-tag {
+        border-color: var(--border2);
+        color: var(--text2);
+      }
+      .proj-stats {
+        display: flex;
+        gap: 28px;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+      }
+      .psv {
+        font-family: var(--sans);
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .psv .r {
+        color: var(--red);
+      }
+      .psl {
+        font-family: var(--mono);
+        font-size: 9px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text3);
+        margin-top: 2px;
+      }
+      .proj-terminal {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        overflow: hidden;
+        align-self: stretch;
+      }
+      .ptbar {
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .ptbar span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+      }
+      .ptbar .d1 {
+        background: var(--red);
+      }
+      .ptbar .d2 {
+        background: #ff6600;
+        opacity: 0.4;
+      }
+      .ptbar .d3 {
+        background: #00cc66;
+        opacity: 0.4;
+      }
+      .ptbody {
+        padding: 20px;
+        font-family: var(--mono);
+        font-size: 11px;
+        line-height: 2;
+        color: var(--red);
+        opacity: 0.7;
+      }
+      .ptbody .dim {
+        color: var(--text3);
+      }
+      .ptbody .grn {
+        color: #00cc66;
+      }
+      .ptbody .wht {
+        color: var(--text2);
+      }
+      .blink {
+        animation: blink 1s step-end infinite;
+      }
+      @keyframes blink {
+        0%,
+        50% {
+          opacity: 1;
+        }
+        51%,
+        100% {
+          opacity: 0;
+        }
+      }
+
+      /* ═══ CERTS ═══ */
+      .certs {
+        padding-bottom: 140px;
+      }
+      .certs-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 16px;
+      }
+      .cert-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 28px 20px;
+        text-align: center;
+        transition: all 0.4s var(--ease);
+        position: relative;
+      }
+      .cert-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 8px;
+        border: 1px solid var(--red);
+        opacity: 0;
+        transition: opacity 0.4s;
+      }
+      .cert-card:hover {
+        transform: translateY(-4px);
+        background: var(--surface);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+      }
+      .cert-card:hover::after {
+        opacity: 0.3;
+      }
+      .cert-icon {
+        width: 48px;
+        height: 48px;
+        margin: 0 auto 16px;
+        border-radius: 12px;
+        background: var(--red-dim);
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        transition: all 0.3s;
+      }
+      .cert-card:hover .cert-icon {
+        background: var(--red-glow);
+        border-color: var(--border2);
+        box-shadow: 0 0 20px rgba(255, 0, 51, 0.1);
+      }
+      .cert-name {
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        color: var(--text);
+        margin-bottom: 6px;
+      }
+      .cert-full {
+        font-size: 10px;
+        font-weight: 300;
+        color: var(--text3);
+        line-height: 1.4;
+      }
+
+      /* ═══ WHY HIRE ═══ */
+      .why-hire {
+        padding-bottom: 140px;
+      }
+      .why-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+      }
+      .why-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 36px 28px;
+        transition: all 0.4s var(--ease);
+        position: relative;
+        overflow: hidden;
+      }
+      .why-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--red);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.5s var(--ease);
+      }
+      .why-card:hover::before {
+        transform: scaleX(1);
+      }
+      .why-card:hover {
+        border-color: var(--border2);
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+      }
+      .why-number {
+        font-family: var(--mono);
+        font-size: 40px;
+        font-weight: 700;
+        color: var(--red);
+        opacity: 0.15;
+        margin-bottom: 16px;
+        line-height: 1;
+      }
+      .why-card h3 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+      .why-card p {
+        font-size: 13px;
+        font-weight: 300;
+        line-height: 1.75;
+        color: var(--text2);
+      }
+
+      /* ═══ RESEARCH ═══ */
+      .research {
+        padding-bottom: 140px;
+      }
+      .research-items {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+      .research-item {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 24px;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        transition: all 0.3s var(--ease);
+        cursor: default;
+      }
+      .research-item:hover {
+        border-color: var(--border2);
+        background: var(--surface);
+        transform: translateX(6px);
+        box-shadow: -3px 0 0 var(--red);
+      }
+      .ri-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        background: var(--red-dim);
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+      }
+      .research-item h4 {
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 4px;
+      }
+      .research-item p {
+        font-size: 12px;
+        font-weight: 300;
+        color: var(--text3);
+        line-height: 1.5;
+      }
+
+      /* ═══ CONTACT ═══ */
+      .contact {
+        padding-top: 80px;
+        padding-bottom: 120px;
+      }
+      .contact-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+        align-items: center;
+      }
+      .contact-left h2 {
+        font-family: var(--display);
+        font-size: clamp(40px, 5vw, 64px);
+        font-weight: 400;
+        line-height: 1.1;
+        margin-bottom: 24px;
+      }
+      .contact-left p {
+        font-size: 16px;
+        font-weight: 300;
+        line-height: 1.7;
+        color: var(--text2);
+        margin-bottom: 40px;
+        max-width: 420px;
+      }
+      .contact-methods {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .cm {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 18px 24px;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        text-decoration: none;
+        color: var(--text2);
+        transition: all 0.3s var(--ease);
+      }
+      .cm:hover {
+        border-color: var(--border2);
+        background: var(--surface);
+        color: var(--text);
+        transform: translateX(6px);
+        box-shadow: -3px 0 0 var(--red);
+      }
+      .cm-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        background: var(--red-dim);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .cm-label {
+        font-family: var(--mono);
+        font-size: 9px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text3);
+        margin-bottom: 2px;
+      }
+      .cm-val {
+        font-size: 14px;
+        font-weight: 400;
+      }
+      .ct {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      .ct-header {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .ct-body {
+        padding: 24px;
+        font-family: var(--mono);
+        font-size: 12px;
+        line-height: 2;
+        color: var(--text3);
+      }
+      .ct-body .cmd {
+        color: var(--red);
+      }
+      .ct-body .out {
+        color: var(--text2);
+      }
+      .ct-body .hl {
+        color: var(--text);
+      }
+
+      /* ═══ FOOTER ═══ */
+      footer {
+        padding: 28px 48px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1300px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+      .fl {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--text3);
+        font-weight: 300;
+      }
+      .fr {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--text3);
+      }
+      .fr .live {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--red);
+        animation: pulse 2s infinite;
+      }
+
+      /* ═══ REVEALS ═══ */
+      .reveal {
+        opacity: 0;
+        transform: translateY(50px);
+        transition:
+          opacity 0.9s var(--ease),
+          transform 0.9s var(--ease);
+      }
+      .reveal.vis {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .reveal-left {
+        opacity: 0;
+        transform: translateX(-50px);
+        transition:
+          opacity 0.9s var(--ease),
+          transform 0.9s var(--ease);
+      }
+      .reveal-left.vis {
+        opacity: 1;
+        transform: translateX(0);
+      }
+      .stagger > * {
+        opacity: 0;
+        transform: translateY(30px);
+        transition:
+          opacity 0.7s var(--ease),
+          transform 0.7s var(--ease);
+      }
+      .stagger.vis > * {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .stagger.vis > *:nth-child(1) {
+        transition-delay: 0s;
+      }
+      .stagger.vis > *:nth-child(2) {
+        transition-delay: 0.07s;
+      }
+      .stagger.vis > *:nth-child(3) {
+        transition-delay: 0.14s;
+      }
+      .stagger.vis > *:nth-child(4) {
+        transition-delay: 0.21s;
+      }
+      .stagger.vis > *:nth-child(5) {
+        transition-delay: 0.28s;
+      }
+      .stagger.vis > *:nth-child(6) {
+        transition-delay: 0.35s;
+      }
+      .stagger.vis > *:nth-child(7) {
+        transition-delay: 0.42s;
+      }
+      .stagger.vis > *:nth-child(8) {
+        transition-delay: 0.49s;
+      }
+      .stagger.vis > *:nth-child(9) {
+        transition-delay: 0.56s;
+      }
+      .stagger.vis > *:nth-child(10) {
+        transition-delay: 0.63s;
+      }
+
+      /* ═══ RESPONSIVE ═══ */
+      @media (max-width: 1024px) {
+        .metrics-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+        .certs-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+        .dash-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 900px) {
+        nav {
+          padding: 0 24px;
+        }
+        section {
+          padding-left: 24px;
+          padding-right: 24px;
+        }
+        .about-layout {
+          grid-template-columns: 1fr;
+          gap: 40px;
+        }
+        .proj-grid {
+          grid-template-columns: 1fr;
+        }
+        .proj-card.featured {
+          grid-template-columns: 1fr;
+        }
+        .why-grid {
+          grid-template-columns: 1fr;
+        }
+        .research-items {
+          grid-template-columns: 1fr;
+        }
+        .contact-layout {
+          grid-template-columns: 1fr;
+          gap: 48px;
+        }
+        .metrics-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .certs-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .nav-menu {
+          display: none;
+        }
+        .sd {
+          padding: 0 24px;
+        }
+        footer {
+          padding: 28px 24px;
+        }
+        .custom-cursor,
+        .cursor-dot {
+          display: none !important;
+        }
+      }
+      @media (max-width: 600px) {
+        .hero-title-row {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .hero-sep {
+          display: none;
+        }
+        .hero-actions {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .metrics-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .certs-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="custom-cursor" id="cursor"></div>
+    <div class="cursor-dot" id="cursorDot"></div>
+    <canvas id="particles"></canvas>
+    <div class="scanlines"></div>
+    <div class="noise-overlay"></div>
+
+    <nav id="navbar">
+      <a href="#" class="nav-brand"
+        ><span class="pulse"></span
+        ><span class="bracket">[</span>N.SRIDASYAM<span class="bracket"
+          >]</span
+        ></a
+      >
+      <ul class="nav-menu">
+        <li><a href="#about">About</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#dashboard">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#certs">Frameworks</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <section class="hero" id="hero">
+      <div class="hero-bg-text">SECURE</div>
+      <div class="hero-grid-bg"></div>
+      <div class="hero-glow-1"></div>
+      <div class="hero-glow-2"></div>
+      <div class="hero-content">
+        <div class="hero-top-line">
+          <span class="line"></span>Digital Forensics &amp; Cybersecurity
+        </div>
+        <div class="hero-name">
+          <span class="outline">NITHIN</span><br /><span
+            class="red glitch"
+            data-text="SRIDASYAM"
+            >SRIDASYAM</span
+          >
+        </div>
+        <div class="hero-title-row">
+          <span class="hero-title-badge">Aspiring SOC Analyst</span>
+          <span class="hero-sep"></span>
+          <span class="hero-location">Albany, NY, USA</span>
+        </div>
+        <p class="hero-desc">
+          I identify vulnerabilities, simulate real-world attacks, and build intelligent
+          systems that detect threats before they escalate. Focused on offensive
+          security, threat detection, and practical defense engineering.
+        </p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn-red"
+            ><span>Contact Me</span
+            ><svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7" /></svg
+          ></a>
+          <a href="#projects" class="btn-outline">View Projects</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="metrics reveal">
+      <div class="metrics-grid">
+        <div class="metric">
+          <div class="metric-num">
+            <span class="count-up" data-target="3">0</span
+            ><span class="r">+</span>
+          </div>
+          <div class="metric-label">Years Experience</div>
+        </div>
+        <div class="metric">
+          <div class="metric-num">
+            <span class="count-up" data-target="20">0</span
+            ><span class="r">+</span>
+          </div>
+          <div class="metric-label">Vulnerabilities Analyzed</div>
+        </div>
+        <div class="metric">
+          <div class="metric-num">
+            <span class="count-up" data-target="10">0</span>
+          </div>
+          <div class="metric-label">RNG Criteria Reviewed</div>
+        </div>
+        <div class="metric">
+          <div class="metric-num">
+            <span class="count-up" data-target="30">0</span
+            ><span class="r">+</span>
+          </div>
+          <div class="metric-label">Systems Secured</div>
+        </div>
+        <div class="metric">
+          <div class="metric-num">~99<span class="r">%</span></div>
+          <div class="metric-label">IDS Model Accuracy</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sd"><div class="sdi"></div></div>
+
+    <section class="about" id="about">
+      <div class="section-tag reveal">About</div>
+      <div class="about-layout">
+        <div class="about-text reveal-left">
+          <h2>
+            Breaking systems to
+            <span style="color: var(--red)">build them stronger.</span>
+          </h2>
+          <p>
+            I am a cybersecurity graduate student focused on practical security work:
+            threat detection, penetration testing, digital forensics, and security
+            research. My experience includes evaluating
+            <span class="hl">cryptographic random number generators</span> through
+            the National Security Agency INSuRE program and building
+            <span class="hl">AI-based intrusion detection</span> models using real
+            network traffic datasets.
+          </p>
+          <p>
+            Currently completing my Master's in Digital Forensics &amp;
+            Cybersecurity at SUNY Albany, I enjoy exploring security tools,
+            analyzing attack patterns, and improving both offensive and defensive
+            cybersecurity skills through hands-on lab experience.
+          </p>
+          <p>
+            My goal is simple: understand how attacks work, document risk clearly,
+            and help teams build stronger, more reliable defenses.
+          </p>
+        </div>
+        <div class="about-card reveal">
+          <div class="about-card-header">
+            <span class="acd r"></span><span class="acd y"></span
+            ><span class="acd g"></span
+            ><span class="about-card-title">profile.config</span>
+          </div>
+          <div>
+            <div class="about-row">
+              <span class="about-key">name</span
+              ><span class="about-val">Nithin Sridasyam</span>
+            </div>
+            <div class="about-row">
+              <span class="about-key">location</span
+              ><span class="about-val">Albany, NY</span>
+            </div>
+            <div class="about-row">
+              <span class="about-key">degree</span
+              ><span class="about-val">M.S. Digital Forensics</span>
+            </div>
+            <div class="about-row">
+              <span class="about-key">university</span
+              ><span class="about-val">SUNY Albany</span>
+            </div>
+            <div class="about-row">
+              <span class="about-key">graduation</span
+              ><span class="about-val">May 2026</span>
+            </div>
+            <div class="about-row">
+              <span class="about-key">focus</span
+              ><span class="about-val">Threat Detection . Incident Response</span>
+            </div>
+            <div class="about-row">
+              <span class="about-key">research</span
+              ><span class="about-val">NSA INSuRE Program</span>
+            </div>
+            <div class="about-row">
+              <span class="about-key">status</span
+              ><span class="about-val" style="color: var(--red)"
+                >● Open to Work</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="sd"><div class="sdi"></div></div>
+
+    <section class="experience" id="experience">
+      <div class="section-tag reveal">Experience</div>
+      <div class="sh reveal">Mission <span class="red">Log.</span></div>
+      <div class="ss reveal" style="margin-bottom: 64px">
+        A track record of supporting secure operations, conducting research, and
+        applying hands-on cybersecurity skills across academic and enterprise environments.
+      </div>
+      <div class="exp-timeline stagger">
+        <div class="exp-item">
+          <div class="exp-header">
+            <div>
+              <div class="exp-role">Student Assistant</div>
+              <div class="exp-org">
+                Athletics Department · University at Albany
+              </div>
+            </div>
+            <span class="exp-date">Jan 2025 - Present</span>
+          </div>
+          <ul class="exp-points">
+            <li>
+              Supported daily operations and user-facing workflows across 30+ systems,
+              helping resolve access, authentication, and service-related issues
+            </li>
+            <li>
+              Assisted with system updates, role-based access changes, and documentation
+              to maintain smooth and consistent department operations
+            </li>
+            <li>
+              Created and maintained troubleshooting notes, improving knowledge sharing
+              and helping reduce repeated operational issues
+            </li>
+          </ul>
+        </div>
+        <div class="exp-item">
+          <div class="exp-header">
+            <div>
+              <div class="exp-role">Cybersecurity Research Intern</div>
+              <div class="exp-org">
+                National Security Agency - INSuRE Program · University at Albany
+              </div>
+            </div>
+            <span class="exp-date">Sep 2025 - Dec 2025</span>
+          </div>
+          <ul class="exp-points">
+            <li>
+              Evaluated cryptographic RNG architecture across 4 major platforms —
+              Microsoft, Intel, Apple, and Linux
+            </li>
+            <li>
+              Assessed RNG compliance against NIST SP 800-90 and FIPS 140-3 standards
+              using 10 defined compliance criteria
+            </li>
+            <li>
+              Identified RNG design considerations and security weaknesses through
+              entropy sourcing, DRBG behavior, and standards-based analysis
+            </li>
+          </ul>
+        </div>
+        <div class="exp-item">
+          <div class="exp-header">
+            <div>
+              <div class="exp-role">Cybersecurity Intern</div>
+              <div class="exp-org">Verzeo EduTech · Hyderabad, India</div>
+            </div>
+            <span class="exp-date">Aug 2022 - Oct 2023</span>
+          </div>
+          <ul class="exp-points">
+            <li>
+              Performed penetration testing activities using Metasploit, Nmap, and
+              controlled exploit simulations in lab and training environments
+            </li>
+            <li>
+              Conducted reconnaissance, vulnerability identification, and security
+              finding documentation to support remediation workflows
+            </li>
+            <li>
+              Prepared security assessment notes and incident-style reports aligned
+              with common security frameworks and SIEM workflows
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="sd"><div class="sdi"></div></div>
+
+    <section class="dashboard" id="dashboard">
+      <div class="section-tag reveal">Skills</div>
+      <div class="sh reveal">Threat <span class="red">Dashboard.</span></div>
+      <div class="ss reveal" style="margin-bottom: 64px">
+        Real-time proficiency across security domains.
+      </div>
+      <div class="dash-grid reveal">
+        <div class="dash-panel">
+          <div class="dash-panel-header">
+            <div class="dpt">
+              <span class="dot-live"></span> Skill Proficiency Monitor
+            </div>
+            <div class="dps">Live</div>
+          </div>
+          <div class="skill-bars" id="skillBars">
+            <div class="skill-bar-item">
+              <div class="skill-bar-top">
+                <span class="sbn"
+                  >Penetration Testing & Vulnerability Assessment</span
+                ><span class="sbp">78%</span>
+              </div>
+              <div class="sbt"><div class="sbf" data-width="78"></div></div>
+            </div>
+            <div class="skill-bar-item">
+              <div class="skill-bar-top">
+                <span class="sbn">Network Security & Traffic Analysis</span
+                ><span class="sbp">82%</span>
+              </div>
+              <div class="sbt"><div class="sbf" data-width="82"></div></div>
+            </div>
+            <div class="skill-bar-item">
+              <div class="skill-bar-top">
+                <span class="sbn">Python & Scripting (Bash, PowerShell)</span
+                ><span class="sbp">84%</span>
+              </div>
+              <div class="sbt"><div class="sbf" data-width="84"></div></div>
+            </div>
+            <div class="skill-bar-item">
+              <div class="skill-bar-top">
+                <span class="sbn">Incident Response & Digital Forensics</span
+                ><span class="sbp">82%</span>
+              </div>
+              <div class="sbt"><div class="sbf" data-width="82"></div></div>
+            </div>
+            <div class="skill-bar-item">
+              <div class="skill-bar-top">
+                <span class="sbn">AI/ML for Cybersecurity</span
+                ><span class="sbp">85%</span>
+              </div>
+              <div class="sbt"><div class="sbf" data-width="85"></div></div>
+            </div>
+            <div class="skill-bar-item">
+              <div class="skill-bar-top">
+                <span class="sbn">Cryptographic Analysis</span
+                ><span class="sbp">76%</span>
+              </div>
+              <div class="sbt"><div class="sbf" data-width="76"></div></div>
+            </div>
+            <div class="skill-bar-item">
+              <div class="skill-bar-top">
+                <span class="sbn">SIEM & Threat Intelligence (Splunk)</span
+                ><span class="sbp">80%</span>
+              </div>
+              <div class="sbt"><div class="sbf" data-width="80"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="dash-panel">
+          <div class="dash-panel-header">
+            <div class="dpt">Arsenal Status</div>
+            <div class="dps">Active</div>
+          </div>
+          <div class="tool-grid stagger">
+            <div class="tool-item">
+              <span class="tool-name">Metasploit</span
+              ><span class="tool-status">Active</span>
+            </div>
+            <div class="tool-item">
+              <span class="tool-name">Nmap</span
+              ><span class="tool-status">Active</span>
+            </div>
+            <div class="tool-item">
+              <span class="tool-name">Wireshark</span
+              ><span class="tool-status">Active</span>
+            </div>
+            <div class="tool-item">
+              <span class="tool-name">Burp Suite</span
+              ><span class="tool-status">Active</span>
+            </div>
+            <div class="tool-item">
+              <span class="tool-name">Splunk SIEM</span
+              ><span class="tool-status">Active</span>
+            </div>
+            <div class="tool-item">
+              <span class="tool-name">Nessus</span
+              ><span class="tool-status">Active</span>
+            </div>
+            <div class="tool-item">
+              <span class="tool-name">OSINT Tools</span
+              ><span class="tool-status">Active</span>
+            </div>
+            <div class="tool-item">
+              <span class="tool-name">Git / GitHub</span
+              ><span class="tool-status">Active</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="sd"><div class="sdi"></div></div>
+
+    <section class="projects" id="projects">
+      <div class="section-tag reveal">Projects</div>
+      <div class="sh reveal">Field <span class="red">Operations.</span></div>
+      <div class="ss reveal" style="margin-bottom: 64px">
+        Battle-tested projects that demonstrate real-world impact.
+      </div>
+      <div class="proj-grid stagger">
+        <div class="proj-card featured">
+          <div>
+            <div class="proj-num">// 001</div>
+            <h3>AI-Based Intrusion Detection System</h3>
+            <p>
+              Designed an AI-powered IDS analyzing network traffic to detect brute-force
+              FTP/SSH attacks using the CSE-CIC-IDS2018 benchmark dataset. Engineered
+              79+ network flow features and evaluated ANN, Logistic Regression, and
+              Random Forest models.
+            </p>
+            <ul class="exp-points" style="margin-bottom: 24px;">
+              <li>
+                Engineered an end-to-end Python intrusion detection pipeline on the
+                CSE-CIC-IDS2018 dataset, classifying FTP and SSH brute-force traffic
+                with TensorFlow/Keras ANN, Random Forest, and Logistic Regression models
+              </li>
+              <li>
+                Built a 4-layer feed-forward Artificial Neural Network with dropout
+                regularization and early stopping over 79 flow features using
+                StandardScaler and an 80/20 stratified train-test split
+              </li>
+              <li>
+                Benchmarked three supervised classifiers on accuracy, precision, recall,
+                and F1 — achieving ~99% accuracy with Random Forest and strong test-set
+                performance across key evaluation metrics
+              </li>
+            </ul>
+            <div class="proj-tags">
+              <span class="proj-tag">Python</span>
+              <span class="proj-tag">Scikit-learn</span>
+              <span class="proj-tag">TensorFlow</span>
+              <span class="proj-tag">Keras</span>
+              <span class="proj-tag">ML/AI</span>
+            </div>
+            <div class="hero-actions" style="margin-top: 20px; opacity: 1; animation: none;">
+              <a href="https://github.com/yourusername/ids-project" target="_blank" class="btn-outline">View Code</a>
+            </div>
+            <div class="proj-stats">
+              <div>
+                <div class="psv">~99<span class="r">%</span></div>
+                <div class="psl">Accuracy</div>
+              </div>
+              <div>
+                <div class="psv">79<span class="r">+</span></div>
+                <div class="psl">Features</div>
+              </div>
+              <div>
+                <div class="psv">3</div>
+                <div class="psl">Models</div>
+              </div>
+            </div>
+          </div>
+          <div class="proj-terminal">
+            <div class="ptbar">
+              <span class="d1"></span><span class="d2"></span><span class="d3"></span>
+            </div>
+            <div class="ptbody">
+              <span class="dim">$</span>
+              <span style="color: var(--red)">python</span>
+              <span class="wht">ids_model.py --train</span><br />
+              <span class="dim">[INFO]</span> Loading CSE-CIC-IDS2018...<br />
+              <span class="dim">[INFO]</span> Features engineered:
+              <span class="wht">79</span><br />
+              <span class="dim">[INFO]</span> Training Random Forest...<br />
+              <span class="dim">[</span><span style="color: var(--red)">████████████████████</span><span class="dim">]</span> 100%<br />
+              <span class="grn">[PASS]</span> Accuracy:
+              <span class="wht">~99%</span><br />
+              <span class="grn">[PASS]</span> Model comparison complete<span class="blink">_</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="proj-card">
+          <div>
+            <div class="proj-num">// 002</div>
+            <h3>Advanced Network Port Scanner</h3>
+            <p>
+              Developed a multi-threaded network port scanner to identify open ports,
+              services, and potential vulnerabilities across local and subnet-based
+              environments. Designed for efficient discovery and structured analysis.
+            </p>
+            <ul class="exp-points" style="margin-bottom: 24px;">
+              <li>
+                Built a high-performance scanner using Python multi-threading,
+                reducing scan time by approximately 4x across large port ranges
+              </li>
+              <li>
+                Implemented service detection and banner grabbing to identify running
+                services, exposed ports, and possible misconfigurations
+              </li>
+              <li>
+                Added CIDR-based subnet scanning to support broader network discovery
+                and asset identification across multiple hosts
+              </li>
+              <li>
+                Structured scan output for easier review, reporting, and integration
+                with vulnerability assessment workflows
+              </li>
+            </ul>
+            <div class="proj-tags">
+              <span class="proj-tag">Python</span>
+              <span class="proj-tag">Networking</span>
+              <span class="proj-tag">Multi-threading</span>
+              <span class="proj-tag">Banner Grabbing</span>
+              <span class="proj-tag">Security Tools</span>
+            </div>
+            <div class="hero-actions" style="margin-top: 20px; opacity: 1; animation: none;">
+              <a href="https://github.com/yourusername/port-scanner" target="_blank" class="btn-outline">View Code</a>
+            </div>
+            <div class="proj-stats">
+              <div>
+                <div class="psv">4<span class="r">x</span></div>
+                <div class="psl">Faster Scans</div>
+              </div>
+              <div>
+                <div class="psv">256<span class="r">+</span></div>
+                <div class="psl">Hosts Scanned</div>
+              </div>
+              <div>
+                <div class="psv">10K<span class="r">+</span></div>
+                <div class="psl">Ports Tested</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="proj-card">
+          <div>
+            <div class="proj-num">// 003</div>
+            <h3>Enterprise Security Assessment &amp; Penetration Testing</h3>
+            <p>
+              Conducted controlled penetration testing across enterprise systems to
+              identify technical vulnerabilities and human-factor security gaps. Used
+              simulated attack scenarios to support remediation and awareness improvement.
+            </p>
+            <ul class="exp-points" style="margin-bottom: 24px;">
+              <li>
+                Executed controlled exploit payloads using Metasploit, including
+                keylogger simulations, identifying vulnerabilities across 10 internal systems
+              </li>
+              <li>
+                Led a simulated phishing campaign using Social Engineering Toolkit (SET),
+                uncovering 7 critical gaps in employee security awareness and protocol handling
+              </li>
+              <li>
+                Performed network reconnaissance and service enumeration using Nmap to
+                identify exposed services, weak configurations, and potential attack paths
+              </li>
+              <li>
+                Documented findings in structured security reports, supporting patch
+                management decisions and practical risk mitigation steps
+              </li>
+            </ul>
+            <div class="proj-tags">
+              <span class="proj-tag">Metasploit</span>
+              <span class="proj-tag">SET Toolkit</span>
+              <span class="proj-tag">Nmap</span>
+              <span class="proj-tag">Penetration Testing</span>
+              <span class="proj-tag">Social Engineering</span>
+            </div>
+            <div class="proj-stats">
+              <div>
+                <div class="psv">10<span class="r">+</span></div>
+                <div class="psl">Systems Tested</div>
+              </div>
+              <div>
+                <div class="psv">7</div>
+                <div class="psl">Critical Gaps</div>
+              </div>
+              <div>
+                <div class="psv">3</div>
+                <div class="psl">Attack Vectors</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="sd"><div class="sdi"></div></div>
+
+    <section class="certs" id="certs">
+      <div class="section-tag reveal">Frameworks</div>
+      <div class="sh reveal">Security <span class="red">Standards.</span></div>
+      <div class="ss reveal" style="margin-bottom: 64px">
+        Compliance frameworks and methodologies that guide my approach.
+      </div>
+      <div class="certs-grid stagger">
+        <div class="cert-card">
+          <div class="cert-icon">🛡️</div>
+          <div class="cert-name">NIST CSF</div>
+          <div class="cert-full">Cybersecurity Framework</div>
+        </div>
+        <div class="cert-card">
+          <div class="cert-icon">🔐</div>
+          <div class="cert-name">SP 800-53</div>
+          <div class="cert-full">Security Controls</div>
+        </div>
+        <div class="cert-card">
+          <div class="cert-icon">🚨</div>
+          <div class="cert-name">SP 800-61</div>
+          <div class="cert-full">Incident Handling</div>
+        </div>
+        <div class="cert-card">
+          <div class="cert-icon">🔑</div>
+          <div class="cert-name">FIPS 140-3</div>
+          <div class="cert-full">Cryptographic Modules</div>
+        </div>
+        <div class="cert-card">
+          <div class="cert-icon">📋</div>
+          <div class="cert-name">SP 800-90</div>
+          <div class="cert-full">Random Bit Generation</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="sd"><div class="sdi"></div></div>
+
+    <section class="why-hire" id="why">
+      <div class="section-tag reveal">Value Proposition</div>
+      <div class="sh reveal">Why <span class="red">me.</span></div>
+      <div class="ss reveal" style="margin-bottom: 64px">
+        What I bring to a world-class security team.
+      </div>
+      <div class="why-grid stagger">
+        <div class="why-card">
+          <div class="why-number">01</div>
+          <h3>Government-Level Research</h3>
+          <p>
+            Worked under the NSA's INSuRE program evaluating cryptographic RNG
+            architecture across major platforms. Rigorous, methodical, and
+            research-oriented.
+          </p>
+        </div>
+        <div class="why-card">
+          <div class="why-number">02</div>
+          <h3>AI-Augmented Defense</h3>
+          <p>
+            Built ML-powered intrusion detection models and compared supervised
+            classifiers using accuracy, precision, recall, and F1 score. I focus
+            on practical detection value, not just tool usage.
+          </p>
+        </div>
+        <div class="why-card">
+          <div class="why-number">03</div>
+          <h3>Full-Spectrum Operator</h3>
+          <p>
+            From penetration testing labs and traffic analysis to incident response
+            documentation and standards-based research, I bring a balanced
+            offensive and defensive security foundation.
+          </p>
+        </div>
+        <div class="why-card">
+          <div class="why-number">04</div>
+          <h3>Security Research Mindset</h3>
+          <p>
+            I approach problems methodically: reproduce the issue, analyze the
+            evidence, document the risk, and recommend practical remediation steps.
+          </p>
+        </div>
+        <div class="why-card">
+          <div class="why-number">05</div>
+          <h3>Standards & Compliance</h3>
+          <p>
+            Deep expertise across NIST CSF, SP 800-53, SP 800-61, and FIPS
+            140-3. Security operations that meet regulatory requirements at
+            velocity.
+          </p>
+        </div>
+        <div class="why-card">
+          <div class="why-number">06</div>
+          <h3>Impact-Driven Mindset</h3>
+          <p>
+            Hands-on projects, standards-based research, and technical documentation.
+            I measure success by clear findings, useful evidence, and better
+            security decisions.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div class="sd"><div class="sdi"></div></div>
+
+    <section class="research" id="research">
+      <div class="section-tag reveal">Research</div>
+      <div class="sh reveal">Active <span class="red">Interests.</span></div>
+      <div class="ss reveal" style="margin-bottom: 64px">
+        Areas where I'm pushing the boundaries of what's possible.
+      </div>
+      <div class="research-items stagger">
+        <div class="research-item">
+          <div class="ri-icon">🧠</div>
+          <div>
+            <h4>Threat Detection & Analysis</h4>
+            <p>
+              Detecting and analyzing suspicious activity across network and system logs
+            </p>
+          </div>
+        </div>
+        <div class="research-item">
+          <div class="ri-icon">🔐</div>
+          <div>
+            <h4>SIEM & Log Monitoring</h4>
+            <p>Real-time log analysis and alert investigation using SIEM tools</p>
+          </div>
+        </div>
+        <div class="research-item">
+          <div class="ri-icon">🕵️</div>
+          <div>
+            <h4>Incident Response & Triage</h4>
+            <p>Investigating alerts, analyzing threats, and responding to security incidents</p>
+          </div>
+        </div>
+        <div class="research-item">
+          <div class="ri-icon">🔍</div>
+          <div>
+            <h4>Digital Forensics & Malware Analysis</h4>
+            <p>Analyzing system artifacts and understanding adversary behavior</p>
+          </div>
+        </div>
+        <div class="research-item">
+          <div class="ri-icon">☁️</div>
+          <div>
+            <h4>Network Security & Traffic Analysis</h4>
+            <p>Monitoring network activity, detecting anomalies, and identifying attack patterns</p>
+          </div>
+        </div>
+        <div class="research-item">
+          <div class="ri-icon">⚡</div>
+          <div>
+            <h4>Zero Trust Architecture</h4>
+            <p>Networks where trust is never assumed, always verified</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="sd"><div class="sdi"></div></div>
+
+    <section class="contact" id="contact">
+      <div class="section-tag reveal">Contact</div>
+      <div class="contact-layout">
+        <div class="contact-left reveal">
+          <h2>
+            Let's build something
+            <span style="color: var(--red)">unbreakable.</span>
+          </h2>
+          <p>
+            Open to cybersecurity roles, research collaborations, and security
+            analyst opportunities.<br>
+            Let’s connect.
+          </p>
+          <div class="contact-methods">
+            <a href="mailto:nithinsridasyam.official@gmail.com" class="cm">
+              <div class="cm-icon">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="var(--red)"
+                  stroke-width="1.5"
+                >
+                  <rect x="2" y="4" width="20" height="16" rx="2" />
+                  <path d="M22 4l-10 8L2 4" />
+                </svg>
+              </div>
+              <div>
+                <div class="cm-label">Email</div>
+                <div class="cm-val">nithinsridasyam.official@gmail.com</div>
+              </div>
+            </a>
+            <a
+              href="https://www.linkedin.com/in/nithin-sridasyam/"
+              class="cm"
+              target="_blank"
+            >
+              <div class="cm-icon">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="var(--red)"
+                  stroke-width="1.5"
+                >
+                  <path
+                    d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-7a6 6 0 016-6z"
+                  />
+                  <rect x="2" y="9" width="4" height="12" />
+                  <circle cx="4" cy="4" r="2" />
+                </svg>
+              </div>
+              <div>
+                <div class="cm-label">LinkedIn</div>
+                <div class="cm-val">nithin-sridasyam</div>
+              </div>
+            </a>
+            <a
+              href="https://github.com/yourusername"
+              class="cm"
+              target="_blank"
+            >
+              <div class="cm-icon">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="var(--red)"
+                  stroke-width="1.5"
+                >
+                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22" />
+                </svg>
+              </div>
+              <div>
+                <div class="cm-label">GitHub</div>
+                <div class="cm-val">yourusername</div>
+              </div>
+            </a>
+            <a href="tel:+15188889304" class="cm">
+              <div class="cm-icon">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="var(--red)"
+                  stroke-width="1.5"
+                >
+                  <path
+                    d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <div class="cm-label">Phone</div>
+                <div class="cm-val">+1 (518) 888-9304</div>
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="ct reveal">
+          <div class="ct-header">
+            <span class="acd r"></span><span class="acd y"></span
+            ><span class="acd g"></span>
+          </div>
+          <div class="ct-body">
+            <span class="cmd">$</span> <span class="out">whoami</span><br />
+            <span class="hl">nithin.sridasyam</span><br /><br />
+            <span class="cmd">$</span> <span class="out">cat status.txt</span
+            ><br />
+            <span class="hl">Open to opportunities</span><br />
+            <span>Seeking: SOC Analyst, Network Security Analyst,</span><br />
+            <span>GRC, Threat & Incident Analyst</span><br /><br />
+            <span class="cmd">$</span> <span class="out">cat research.txt</span
+            ><br />
+            <span class="hl">NSA INSuRE Research Participant</span><br /><br />
+            <span class="cmd">$</span> <span class="out">echo $AVAILABLE</span
+            ><br />
+            <span class="hl">Immediately</span><br /><br />
+            <span class="cmd">$</span> <span class="blink">_</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span class="fl">© 2026 NITHIN SRIDASYAM — All systems operational.</span>
+      <span class="fr"><span class="live"></span>Available for hire</span>
+    </footer>
+
+    <script>
+      // Cursor
+      const cur = document.getElementById("cursor"),
+        dot = document.getElementById("cursorDot");
+      let mx = 0,
+        my = 0,
+        cx = 0,
+        cy = 0;
+      document.addEventListener("mousemove", (e) => {
+        mx = e.clientX;
+        my = e.clientY;
+        dot.style.left = mx - 2 + "px";
+        dot.style.top = my - 2 + "px";
+      });
+      function ac() {
+        cx += (mx - cx) * 0.15;
+        cy += (my - cy) * 0.15;
+        cur.style.left = cx - 8 + "px";
+        cur.style.top = cy - 8 + "px";
+        requestAnimationFrame(ac);
+      }
+      ac();
+      document
+        .querySelectorAll(
+          "a,button,.proj-card,.exp-item,.cert-card,.why-card,.research-item,.metric,.tool-item",
+        )
+        .forEach((el) => {
+          el.addEventListener("mouseenter", () => cur.classList.add("hover"));
+          el.addEventListener("mouseleave", () =>
+            cur.classList.remove("hover"),
+          );
+        });
+
+      // Particles
+      const cv = document.getElementById("particles"),
+        ct = cv.getContext("2d");
+      let W, H;
+      const pts = [];
+      function rc() {
+        W = cv.width = innerWidth;
+        H = cv.height = innerHeight;
+      }
+      rc();
+      addEventListener("resize", rc);
+      for (let i = 0; i < 60; i++)
+        pts.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3,
+          r: Math.random() * 1.5 + 0.5,
+          a: Math.random() * 0.3 + 0.05,
+        });
+      function dp() {
+        ct.clearRect(0, 0, W, H);
+        pts.forEach((p) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0) p.x = W;
+          if (p.x > W) p.x = 0;
+          if (p.y < 0) p.y = H;
+          if (p.y > H) p.y = 0;
+          ct.beginPath();
+          ct.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ct.fillStyle = `rgba(255,0,51,${p.a})`;
+          ct.fill();
+        });
+        for (let i = 0; i < pts.length; i++)
+          for (let j = i + 1; j < pts.length; j++) {
+            const dx = pts[i].x - pts[j].x,
+              dy = pts[i].y - pts[j].y,
+              d = Math.sqrt(dx * dx + dy * dy);
+            if (d < 150) {
+              ct.beginPath();
+              ct.moveTo(pts[i].x, pts[i].y);
+              ct.lineTo(pts[j].x, pts[j].y);
+              ct.strokeStyle = `rgba(255,0,51,${0.04 * (1 - d / 150)})`;
+              ct.lineWidth = 0.5;
+              ct.stroke();
+            }
+          }
+        requestAnimationFrame(dp);
+      }
+      dp();
+
+      // Reveals
+      const ro = new IntersectionObserver(
+        (es) => {
+          es.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("vis");
+              if (e.target.querySelector && e.target.querySelector(".sbf"))
+                e.target.querySelectorAll(".sbf").forEach((b) => {
+                  setTimeout(() => {
+                    b.style.width = b.dataset.width + "%";
+                  }, 300);
+                });
+            }
+          });
+        },
+        { threshold: 0.1, rootMargin: "0px 0px -50px 0px" },
+      );
+      document
+        .querySelectorAll(".reveal,.reveal-left,.stagger")
+        .forEach((el) => ro.observe(el));
+
+      // Counters
+      const co = new IntersectionObserver(
+        (es) => {
+          es.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.querySelectorAll(".count-up").forEach((c) => {
+                const t = +c.dataset.target;
+                let v = 0;
+                const inc = t / 40;
+                const ti = setInterval(() => {
+                  v += inc;
+                  if (v >= t) {
+                    c.textContent = t;
+                    clearInterval(ti);
+                  } else c.textContent = Math.floor(v);
+                }, 40);
+              });
+              co.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.5 },
+      );
+      document
+        .querySelectorAll(".metrics-grid")
+        .forEach((el) => co.observe(el));
+
+      // Active nav
+      const secs = document.querySelectorAll("section[id]");
+      addEventListener("scroll", () => {
+        const sy = scrollY + 100;
+        secs.forEach((s) => {
+          const t = s.offsetTop - 100,
+            b = t + s.offsetHeight,
+            id = s.getAttribute("id"),
+            l = document.querySelector(`.nav-menu a[href="#${id}"]`);
+          if (l) {
+            if (sy >= t && sy < b) {
+              document
+                .querySelectorAll(".nav-menu a")
+                .forEach((a) => a.classList.remove("active"));
+              l.classList.add("active");
+            }
+          }
+        });
+      });
+
+      // Smooth scroll
+      document.querySelectorAll('a[href^="#"]').forEach((a) => {
+        a.addEventListener("click", function (e) {
+          e.preventDefault();
+          const t = document.querySelector(this.getAttribute("href"));
+          if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      });
+    </script>
+  </body>
+</html>
